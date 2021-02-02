@@ -12,17 +12,41 @@
 //  This template is meant to work with Swinject.
 
 import UIKit
+import Moya
+import RxSwift
 
 protocol HomeInteractorProtocol {
-    // add the functions that are called from the view controller
+    func handleViewDidLoad()
 }
 
 class HomeInteractor: HomeInteractorProtocol {
-
+    
     // MARK: DI
     var presenter: HomePresenterProtocol
-
-    init(presenter: HomePresenterProtocol) {
+    var provider: MoyaProvider<MovieService>!
+    var disposeBag = DisposeBag()
+    
+    init(presenter: HomePresenterProtocol,
+         provider: MoyaProvider<MovieService>) {
         self.presenter = presenter
+        self.provider = provider
+    }
+    
+    func handleViewDidLoad() {
+        getPopularMovies()
+    }
+
+    
+    func getPopularMovies() {
+        provider.rx
+            .request(.getPopularMovies)
+            .filterSuccessfulStatusAndRedirectCodes()
+            .map(Movies.self)
+            .subscribe { [weak self] movies in
+                self?.presenter.presentMovies(movies: movies)
+            } onError: { error in
+                print(error)
+            }.disposed(by: disposeBag)
+
     }
 }

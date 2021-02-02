@@ -9,7 +9,6 @@
 import Foundation
 import Moya
 
-
 enum MovieService {
     case getPopularMovies
 }

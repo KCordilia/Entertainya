@@ -15,9 +15,7 @@ import UIKit
 
 protocol HomePresenterProtocol {
     func set(viewController: HomeViewControllerProtocol?)
-
-    // add the functions that are called from interactor
-    func handle(error: Error)
+    func presentMovies(movies: Movies)
 }
 
 class HomePresenter: HomePresenterProtocol {
@@ -32,8 +30,7 @@ class HomePresenter: HomePresenterProtocol {
 
 // MARK: Methods
 extension  HomePresenter {
-
-    func handle(error: Error) {
-        viewController?.display(error: error)
+    func presentMovies(movies: Movies) {
+        viewController?.displayMovies(movies: movies)
     }
 }

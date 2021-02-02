@@ -8,7 +8,6 @@
 
 import Foundation
 
-//sourcery: AutoMockable
 protocol RootNavigatorProtocol {
     func setRootViewController()
 }

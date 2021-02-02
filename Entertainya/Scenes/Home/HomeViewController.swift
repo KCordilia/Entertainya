@@ -16,13 +16,16 @@ import UIKit
 protocol HomeViewControllerProtocol: UIViewControllerRouting {
     func set(interactor: HomeInteractorProtocol)
     func set(router: HomeRouterProtocol)
-
-    // add the functions that are called from the presenter
-    func display(error: Error)
+    func displayMovies(movies: Movies)
 }
 
 class HomeViewController: UIViewController, HomeViewControllerProtocol {
-
+    // MARK: Outlets
+    @IBOutlet weak var tableView: UITableView!
+    
+    // MARK: Properties
+    private var dataSource = HomeDataSource()
+    
     // MARK: DI
     var interactor: HomeInteractorProtocol?
     var router: HomeRouterProtocol?
@@ -34,28 +37,28 @@ class HomeViewController: UIViewController, HomeViewControllerProtocol {
     func set(router: HomeRouterProtocol) {
         self.router = router
     }
-    
-
-    // MARK: Outlets
-
-    // MARK: Properties
 
     // MARK: Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        interactor?.handleViewDidLoad()
+        setupTableView()
     }
 
     // MARK: Actions
-
-    @IBAction func buttonTapped(_ sender: Any) {
-        print("HALLOOOOO")
+    
+    // MARK: Methods
+    func displayMovies(movies: Movies) {
+        dataSource.set(items: movies.results)
+        tableView.reloadData()
+    }
+    
+    func setupTableView() {
+//        tableView.delegate = self
+        tableView.dataSource = dataSource
+        tableView.register(R.nib.movieTableViewCell)
+//        tableView.tableFooterView = UIView()
     }
 }
 
-// MARK: Methods
-extension HomeViewController {
 
-    func display(error: Error) {
-        //TO DO: better error handling
-    }
-}

@@ -6,12 +6,13 @@ target 'Entertainya' do
   use_frameworks!
 
   # Pods for Entertainya
-pod 'Moya'
-pod 'RxSwift'
+pod 'Moya/RxSwift'
 pod 'Swinject'
 pod 'SwinjectAutoregistration'
 pod 'SwinjectStoryboard'
 pod 'R.swift'
+pod 'Result'
+pod 'Kingfisher'
 
   target 'EntertainyaTests' do
     inherit! :search_paths
