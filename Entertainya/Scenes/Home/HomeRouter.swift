@@ -23,15 +23,18 @@ class HomeRouter: NSObject, HomeRouterProtocol {
     //MARK: DI
     weak var viewController: HomeViewControllerProtocol?
     private let rootNavigator: RootNavigatorProtocol
+    private let movieStoryboard: Storyboard
 
     func set(viewController: HomeViewControllerProtocol?) {
         self.viewController = viewController
     }
 
     init(
-        rootNavigator: RootNavigatorProtocol
+        rootNavigator: RootNavigatorProtocol,
+        movieStoryboard: Storyboard
     ) {
         self.rootNavigator = rootNavigator
+        self.movieStoryboard = movieStoryboard
     }
 }
 
@@ -39,14 +42,15 @@ class HomeRouter: NSObject, HomeRouterProtocol {
 extension HomeRouter {
 
     enum Scene {
-        case destination1
+        case movie(_ movie: Int)
     }
 
     func route(to scene: HomeRouter.Scene) {
         switch scene {
-        case .destination1:
-            /// TODO: Implement routing
-            break
+        case .movie(let id):
+            guard let vc = movieStoryboard.viewController(identifier: MovieStoryboardId.movie) as? MovieViewController else { return }
+            vc.interactor?.getMovie(movieId: id)
+            viewController?.show(vc, sender: nil)
         }
     }
 }

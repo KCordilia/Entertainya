@@ -11,6 +11,10 @@ import Moya
 
 enum MovieService {
     case getPopularMovies
+    case getNowPlayingMovies(region: String)
+    case getTopRatedMovies(region: String)
+    case getUpcomingMovies(region: String)
+    case getSingleMovie(id: Int)
 }
 
 extension MovieService: TargetType {
@@ -22,12 +26,24 @@ extension MovieService: TargetType {
         switch self{
         case .getPopularMovies:
             return "/movie/popular"
+        case .getNowPlayingMovies:
+            return "/movie/now_playing"
+        case .getTopRatedMovies:
+            return "/movie/top_rated"
+        case .getUpcomingMovies:
+            return "/movie/upcoming"
+        case .getSingleMovie(let id):
+            return "movie/\(id)"
         }
     }
 
     var method: Moya.Method {
         switch self {
-        case .getPopularMovies:
+        case .getPopularMovies,
+             .getNowPlayingMovies,
+             .getTopRatedMovies,
+             .getUpcomingMovies,
+             .getSingleMovie:
             return .get
         }
     }
@@ -39,6 +55,37 @@ extension MovieService: TargetType {
     var task: Task {
         switch self {
         case .getPopularMovies:
+            return .requestParameters(
+                parameters: [
+                    "api_key": "b5cf63a4366b7eeb96503ea6c78879ab"
+                ],
+                encoding: URLEncoding.default
+            )
+        case .getNowPlayingMovies(let region):
+            return .requestParameters(
+                parameters: [
+                    "api_key": "b5cf63a4366b7eeb96503ea6c78879ab",
+                    "region": region
+                ],
+                encoding: URLEncoding.default
+            )
+        case .getTopRatedMovies(let region):
+            return .requestParameters(
+                parameters: [
+                    "api_key": "b5cf63a4366b7eeb96503ea6c78879ab",
+                    "region": region
+                ],
+                encoding: URLEncoding.default
+            )
+        case .getUpcomingMovies(let region):
+            return .requestParameters(
+                parameters: [
+                    "api_key": "b5cf63a4366b7eeb96503ea6c78879ab",
+                    "region": region
+                ],
+                encoding: URLEncoding.default
+            )
+        case .getSingleMovie:
             return .requestParameters(
                 parameters: [
                     "api_key": "b5cf63a4366b7eeb96503ea6c78879ab"

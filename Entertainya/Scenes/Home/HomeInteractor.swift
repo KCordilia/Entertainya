@@ -23,8 +23,9 @@ class HomeInteractor: HomeInteractorProtocol {
     
     // MARK: DI
     var presenter: HomePresenterProtocol
-    var provider: MoyaProvider<MovieService>!
-    var disposeBag = DisposeBag()
+    let provider: MoyaProvider<MovieService>!
+    let disposeBag = DisposeBag()
+    let locale = Locale.current.regionCode
     
     init(presenter: HomePresenterProtocol,
          provider: MoyaProvider<MovieService>) {
@@ -34,8 +35,11 @@ class HomeInteractor: HomeInteractorProtocol {
     
     func handleViewDidLoad() {
         getPopularMovies()
+        getNowPlayingMovies()
+        getTopRatedMovies()
+        getUpcomingMovies()
     }
-
+    
     
     func getPopularMovies() {
         provider.rx
@@ -43,10 +47,49 @@ class HomeInteractor: HomeInteractorProtocol {
             .filterSuccessfulStatusAndRedirectCodes()
             .map(Movies.self)
             .subscribe { [weak self] movies in
-                self?.presenter.presentMovies(movies: movies)
+                self?.presenter.presentPopularMovies(movies: movies)
             } onError: { error in
                 print(error)
             }.disposed(by: disposeBag)
-
+        
+    }
+    
+    func getNowPlayingMovies() {
+        guard let region = locale else { return }
+        provider.rx
+            .request(.getNowPlayingMovies(region: region))
+            .filterSuccessfulStatusCodes()
+            .map(Movies.self)
+            .subscribe { [weak self] movies in
+                self?.presenter.presentNowPlayingMovies(movies: movies)
+            } onError: { error in
+                print(error)
+            }.disposed(by: disposeBag)
+    }
+    
+    func getTopRatedMovies() {
+        guard let region = locale else { return }
+        provider.rx
+            .request(.getTopRatedMovies(region: region))
+            .filterSuccessfulStatusCodes()
+            .map(Movies.self)
+            .subscribe { [weak self] movies in
+                self?.presenter.presentTopRatedMovies(movies: movies)
+            } onError: { error in
+                print(error)
+            }.disposed(by: disposeBag)
+    }
+    
+    func getUpcomingMovies() {
+        guard let region = locale else { return }
+        provider.rx
+            .request(.getUpcomingMovies(region: region))
+            .filterSuccessfulStatusCodes()
+            .map(Movies.self)
+            .subscribe { [weak self] movies in
+                self?.presenter.presentUpcomingMovies(movies: movies)
+            } onError: { error in
+                print(error)
+            }.disposed(by: disposeBag)
     }
 }

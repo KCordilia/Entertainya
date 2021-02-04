@@ -89,12 +89,14 @@ struct R: Rswift.Validatable {
   }
 
   #if os(iOS) || os(tvOS)
-  /// This `R.storyboard` struct is generated, and contains static references to 2 storyboards.
+  /// This `R.storyboard` struct is generated, and contains static references to 3 storyboards.
   struct storyboard {
     /// Storyboard `Home`.
     static let home = _R.storyboard.home()
     /// Storyboard `LaunchScreen`.
     static let launchScreen = _R.storyboard.launchScreen()
+    /// Storyboard `Movie`.
+    static let movie = _R.storyboard.movie()
 
     #if os(iOS) || os(tvOS)
     /// `UIStoryboard(name: "Home", bundle: ...)`
@@ -110,34 +112,82 @@ struct R: Rswift.Validatable {
     }
     #endif
 
+    #if os(iOS) || os(tvOS)
+    /// `UIStoryboard(name: "Movie", bundle: ...)`
+    static func movie(_: Void = ()) -> UIKit.UIStoryboard {
+      return UIKit.UIStoryboard(resource: R.storyboard.movie)
+    }
+    #endif
+
     fileprivate init() {}
   }
   #endif
 
-  /// This `R.nib` struct is generated, and contains static references to 1 nibs.
-  struct nib {
-    /// Nib `MovieTableViewCell`.
-    static let movieTableViewCell = _R.nib._MovieTableViewCell()
+  /// This `R.color` struct is generated, and contains static references to 1 colors.
+  struct color {
+    /// Color `red`.
+    static let red = Rswift.ColorResource(bundle: R.hostingBundle, name: "red")
 
     #if os(iOS) || os(tvOS)
-    /// `UINib(name: "MovieTableViewCell", in: bundle)`
-    @available(*, deprecated, message: "Use UINib(resource: R.nib.movieTableViewCell) instead")
-    static func movieTableViewCell(_: Void = ()) -> UIKit.UINib {
-      return UIKit.UINib(resource: R.nib.movieTableViewCell)
+    /// `UIColor(named: "red", bundle: ..., traitCollection: ...)`
+    @available(tvOS 11.0, *)
+    @available(iOS 11.0, *)
+    static func red(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIColor? {
+      return UIKit.UIColor(resource: R.color.red, compatibleWith: traitCollection)
     }
     #endif
 
-    static func movieTableViewCell(owner ownerOrNil: AnyObject?, options optionsOrNil: [UINib.OptionsKey : Any]? = nil) -> MovieTableViewCell? {
-      return R.nib.movieTableViewCell.instantiate(withOwner: ownerOrNil, options: optionsOrNil)[0] as? MovieTableViewCell
+    #if os(watchOS)
+    /// `UIColor(named: "red", bundle: ..., traitCollection: ...)`
+    @available(watchOSApplicationExtension 4.0, *)
+    static func red(_: Void = ()) -> UIKit.UIColor? {
+      return UIKit.UIColor(named: R.color.red.name)
+    }
+    #endif
+
+    fileprivate init() {}
+  }
+
+  /// This `R.nib` struct is generated, and contains static references to 2 nibs.
+  struct nib {
+    /// Nib `MovieCollectionViewCell`.
+    static let movieCollectionViewCell = _R.nib._MovieCollectionViewCell()
+    /// Nib `SectionTitleView`.
+    static let sectionTitleView = _R.nib._SectionTitleView()
+
+    #if os(iOS) || os(tvOS)
+    /// `UINib(name: "MovieCollectionViewCell", in: bundle)`
+    @available(*, deprecated, message: "Use UINib(resource: R.nib.movieCollectionViewCell) instead")
+    static func movieCollectionViewCell(_: Void = ()) -> UIKit.UINib {
+      return UIKit.UINib(resource: R.nib.movieCollectionViewCell)
+    }
+    #endif
+
+    #if os(iOS) || os(tvOS)
+    /// `UINib(name: "SectionTitleView", in: bundle)`
+    @available(*, deprecated, message: "Use UINib(resource: R.nib.sectionTitleView) instead")
+    static func sectionTitleView(_: Void = ()) -> UIKit.UINib {
+      return UIKit.UINib(resource: R.nib.sectionTitleView)
+    }
+    #endif
+
+    static func movieCollectionViewCell(owner ownerOrNil: AnyObject?, options optionsOrNil: [UINib.OptionsKey : Any]? = nil) -> MovieCollectionViewCell? {
+      return R.nib.movieCollectionViewCell.instantiate(withOwner: ownerOrNil, options: optionsOrNil)[0] as? MovieCollectionViewCell
+    }
+
+    static func sectionTitleView(owner ownerOrNil: AnyObject?, options optionsOrNil: [UINib.OptionsKey : Any]? = nil) -> SectionTitleView? {
+      return R.nib.sectionTitleView.instantiate(withOwner: ownerOrNil, options: optionsOrNil)[0] as? SectionTitleView
     }
 
     fileprivate init() {}
   }
 
-  /// This `R.reuseIdentifier` struct is generated, and contains static references to 1 reuse identifiers.
+  /// This `R.reuseIdentifier` struct is generated, and contains static references to 2 reuse identifiers.
   struct reuseIdentifier {
-    /// Reuse identifier `MovieTableViewCell`.
-    static let movieTableViewCell: Rswift.ReuseIdentifier<MovieTableViewCell> = Rswift.ReuseIdentifier(identifier: "MovieTableViewCell")
+    /// Reuse identifier `MovieCollectionViewCell`.
+    static let movieCollectionViewCell: Rswift.ReuseIdentifier<MovieCollectionViewCell> = Rswift.ReuseIdentifier(identifier: "MovieCollectionViewCell")
+    /// Reuse identifier `SectionTitleView`.
+    static let sectionTitleView: Rswift.ReuseIdentifier<SectionTitleView> = Rswift.ReuseIdentifier(identifier: "SectionTitleView")
 
     fileprivate init() {}
   }
@@ -164,15 +214,29 @@ struct _R: Rswift.Validatable {
 
   #if os(iOS) || os(tvOS)
   struct nib {
-    struct _MovieTableViewCell: Rswift.NibResourceType, Rswift.ReuseIdentifierType {
-      typealias ReusableType = MovieTableViewCell
+    struct _MovieCollectionViewCell: Rswift.NibResourceType, Rswift.ReuseIdentifierType {
+      typealias ReusableType = MovieCollectionViewCell
 
       let bundle = R.hostingBundle
-      let identifier = "MovieTableViewCell"
-      let name = "MovieTableViewCell"
+      let identifier = "MovieCollectionViewCell"
+      let name = "MovieCollectionViewCell"
 
-      func firstView(owner ownerOrNil: AnyObject?, options optionsOrNil: [UINib.OptionsKey : Any]? = nil) -> MovieTableViewCell? {
-        return instantiate(withOwner: ownerOrNil, options: optionsOrNil)[0] as? MovieTableViewCell
+      func firstView(owner ownerOrNil: AnyObject?, options optionsOrNil: [UINib.OptionsKey : Any]? = nil) -> MovieCollectionViewCell? {
+        return instantiate(withOwner: ownerOrNil, options: optionsOrNil)[0] as? MovieCollectionViewCell
+      }
+
+      fileprivate init() {}
+    }
+
+    struct _SectionTitleView: Rswift.NibResourceType, Rswift.ReuseIdentifierType {
+      typealias ReusableType = SectionTitleView
+
+      let bundle = R.hostingBundle
+      let identifier = "SectionTitleView"
+      let name = "SectionTitleView"
+
+      func firstView(owner ownerOrNil: AnyObject?, options optionsOrNil: [UINib.OptionsKey : Any]? = nil) -> SectionTitleView? {
+        return instantiate(withOwner: ownerOrNil, options: optionsOrNil)[0] as? SectionTitleView
       }
 
       fileprivate init() {}
@@ -191,24 +255,33 @@ struct _R: Rswift.Validatable {
       #if os(iOS) || os(tvOS)
       try launchScreen.validate()
       #endif
+      #if os(iOS) || os(tvOS)
+      try movie.validate()
+      #endif
     }
 
     #if os(iOS) || os(tvOS)
     struct home: Rswift.StoryboardResourceWithInitialControllerType, Rswift.Validatable {
-      typealias InitialController = HomeViewController
+      typealias InitialController = NavigationController
 
       let bundle = R.hostingBundle
       let homeViewController = StoryboardViewControllerResource<HomeViewController>(identifier: "HomeViewController")
       let name = "Home"
+      let navigationController = StoryboardViewControllerResource<NavigationController>(identifier: "NavigationController")
 
       func homeViewController(_: Void = ()) -> HomeViewController? {
         return UIKit.UIStoryboard(resource: self).instantiateViewController(withResource: homeViewController)
+      }
+
+      func navigationController(_: Void = ()) -> NavigationController? {
+        return UIKit.UIStoryboard(resource: self).instantiateViewController(withResource: navigationController)
       }
 
       static func validate() throws {
         if #available(iOS 11.0, tvOS 11.0, *) {
         }
         if _R.storyboard.home().homeViewController() == nil { throw Rswift.ValidationError(description:"[R.swift] ViewController with identifier 'homeViewController' could not be loaded from storyboard 'Home' as 'HomeViewController'.") }
+        if _R.storyboard.home().navigationController() == nil { throw Rswift.ValidationError(description:"[R.swift] ViewController with identifier 'navigationController' could not be loaded from storyboard 'Home' as 'NavigationController'.") }
       }
 
       fileprivate init() {}
@@ -225,6 +298,26 @@ struct _R: Rswift.Validatable {
       static func validate() throws {
         if #available(iOS 11.0, tvOS 11.0, *) {
         }
+      }
+
+      fileprivate init() {}
+    }
+    #endif
+
+    #if os(iOS) || os(tvOS)
+    struct movie: Rswift.StoryboardResourceType, Rswift.Validatable {
+      let bundle = R.hostingBundle
+      let movieViewController = StoryboardViewControllerResource<MovieViewController>(identifier: "MovieViewController")
+      let name = "Movie"
+
+      func movieViewController(_: Void = ()) -> MovieViewController? {
+        return UIKit.UIStoryboard(resource: self).instantiateViewController(withResource: movieViewController)
+      }
+
+      static func validate() throws {
+        if #available(iOS 11.0, tvOS 11.0, *) {
+        }
+        if _R.storyboard.movie().movieViewController() == nil { throw Rswift.ValidationError(description:"[R.swift] ViewController with identifier 'movieViewController' could not be loaded from storyboard 'Movie' as 'MovieViewController'.") }
       }
 
       fileprivate init() {}

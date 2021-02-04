@@ -16,12 +16,15 @@ import UIKit
 protocol HomeViewControllerProtocol: UIViewControllerRouting {
     func set(interactor: HomeInteractorProtocol)
     func set(router: HomeRouterProtocol)
-    func displayMovies(movies: Movies)
+    func displayPopularMovies(movies: Movies)
+    func displayNowPlayingMovies(movies: Movies)
+    func displayTopRatedMovies(movies: Movies)
+    func displayUpcomingMovies(movies: Movies)
 }
 
 class HomeViewController: UIViewController, HomeViewControllerProtocol {
     // MARK: Outlets
-    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var collectionView: UICollectionView!
     
     // MARK: Properties
     private var dataSource = HomeDataSource()
@@ -41,23 +44,125 @@ class HomeViewController: UIViewController, HomeViewControllerProtocol {
     // MARK: Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationItem.title = "Home"
         interactor?.handleViewDidLoad()
-        setupTableView()
+        setupCollectionView()
     }
 
     // MARK: Actions
     
     // MARK: Methods
-    func displayMovies(movies: Movies) {
-        dataSource.set(items: movies.results)
-        tableView.reloadData()
+    func displayPopularMovies(movies: Movies) {
+        dataSource.set(popularMovies: movies.results)
+        collectionView.reloadData()
+    }
+    func displayNowPlayingMovies(movies: Movies) {
+        dataSource.set(nowPlayingMovies: movies.results)
+        collectionView.reloadData()
+    }
+    func displayTopRatedMovies(movies: Movies) {
+        dataSource.set(topRatedMovies: movies.results)
+        collectionView.reloadData()
+    }
+    func displayUpcomingMovies(movies: Movies) {
+        dataSource.set(upcomingMovies: movies.results)
+        collectionView.reloadData()
     }
     
-    func setupTableView() {
-//        tableView.delegate = self
-        tableView.dataSource = dataSource
-        tableView.register(R.nib.movieTableViewCell)
-//        tableView.tableFooterView = UIView()
+    func setupCollectionView() {
+        collectionView.delegate = self
+        collectionView.dataSource = dataSource
+        collectionView.register(R.nib.movieCollectionViewCell)
+        collectionView.register(R.nib.sectionTitleView, forSupplementaryViewOfKind: R.nib.sectionTitleView.identifier)
+        collectionView.collectionViewLayout = setupCollectionViewLayout()
+    }
+    
+    func setupCollectionViewLayout() -> UICollectionViewLayout {
+        return UICollectionViewCompositionalLayout { sectionNumber, _ -> NSCollectionLayoutSection? in
+            switch sectionNumber {
+            case 0:
+                let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1)))
+                item.contentInsets.trailing = 8
+                item.contentInsets.bottom = 16
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(0.45), heightDimension: .fractionalWidth(0.67)), subitems: [item])
+                let section = NSCollectionLayoutSection(group: group)
+                section.contentInsets.leading = 16
+                section.contentInsets.trailing = 16
+                section.boundarySupplementaryItems = [.init(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(60)), elementKind: R.nib.sectionTitleView.identifier, alignment: .topLeading)]
+                section.orthogonalScrollingBehavior = .continuous // horizontal collectionview
+                return section
+            case 1:
+                let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1)))
+                item.contentInsets.trailing = 8
+                item.contentInsets.bottom = 16
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(0.45), heightDimension: .fractionalWidth(0.67)), subitems: [item])
+                let section = NSCollectionLayoutSection(group: group)
+                section.contentInsets.leading = 16
+                section.contentInsets.trailing = 16
+                section.boundarySupplementaryItems = [.init(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(60)), elementKind: R.nib.sectionTitleView.identifier, alignment: .topLeading)]
+                section.orthogonalScrollingBehavior = .continuous // horizontal collectionview
+                return section
+            case 2:
+                let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1)))
+                item.contentInsets.trailing = 8
+                item.contentInsets.bottom = 16
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(0.45), heightDimension: .fractionalWidth(0.67)), subitems: [item])
+                let section = NSCollectionLayoutSection(group: group)
+                section.contentInsets.leading = 16
+                section.contentInsets.trailing = 16
+                section.boundarySupplementaryItems = [.init(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(60)), elementKind: R.nib.sectionTitleView.identifier, alignment: .topLeading)]
+                section.orthogonalScrollingBehavior = .continuous // horizontal collectionview
+                return section
+            default:
+                let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1)))
+                item.contentInsets.trailing = 8
+                item.contentInsets.bottom = 16
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(0.45), heightDimension: .fractionalWidth(0.67)), subitems: [item])
+                let section = NSCollectionLayoutSection(group: group)
+                section.contentInsets.leading = 16
+                section.contentInsets.trailing = 16
+                section.boundarySupplementaryItems = [.init(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(60)), elementKind: R.nib.sectionTitleView.identifier, alignment: .topLeading)]
+                section.orthogonalScrollingBehavior = .continuous // horizontal collectionview
+                return section
+            }
+        }
+    }
+}
+
+extension HomeViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        switch indexPath.section {
+        case 0:
+            router?.route(to: .movie(dataSource.popularMovies[indexPath.row].id))
+        case 1:
+            router?.route(to: .movie(dataSource.nowPlayingMovies[indexPath.row].id))
+        case 2:
+            router?.route(to: .movie(dataSource.topRatedMovies[indexPath.row].id))
+        default:
+            router?.route(to: .movie(dataSource.upcomingMovies[indexPath.row].id))
+        }
+    }
+    
+}
+
+extension HomeViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let width = collectionView.bounds.width / 3.0
+        let height = width
+        
+        return CGSize(width: width, height: height)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets.zero
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 0
     }
 }
 

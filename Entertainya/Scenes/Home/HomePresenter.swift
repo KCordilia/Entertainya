@@ -15,7 +15,10 @@ import UIKit
 
 protocol HomePresenterProtocol {
     func set(viewController: HomeViewControllerProtocol?)
-    func presentMovies(movies: Movies)
+    func presentPopularMovies(movies: Movies)
+    func presentUpcomingMovies(movies: Movies)
+    func presentNowPlayingMovies(movies: Movies)
+    func presentTopRatedMovies(movies: Movies)
 }
 
 class HomePresenter: HomePresenterProtocol {
@@ -26,11 +29,22 @@ class HomePresenter: HomePresenterProtocol {
     func set(viewController: HomeViewControllerProtocol?) {
         self.viewController = viewController
     }
-}
 
-// MARK: Methods
-extension  HomePresenter {
-    func presentMovies(movies: Movies) {
-        viewController?.displayMovies(movies: movies)
+    // MARK: Methods
+
+    func presentPopularMovies(movies: Movies) {
+        viewController?.displayPopularMovies(movies: movies)
+    }
+    
+    func presentUpcomingMovies(movies: Movies) {
+        viewController?.displayUpcomingMovies(movies: movies)
+    }
+    
+    func presentNowPlayingMovies(movies: Movies) {
+        viewController?.displayNowPlayingMovies(movies: movies)
+    }
+    
+    func presentTopRatedMovies(movies: Movies) {
+        viewController?.displayTopRatedMovies(movies: movies)
     }
 }

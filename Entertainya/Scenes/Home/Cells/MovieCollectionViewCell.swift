@@ -1,20 +1,24 @@
 //
-//  MovieTableViewCell.swift
+//  MovieCollectionViewCell.swift
 //  Entertainya
 //
-//  Created by Karim Cordilia on 02/02/2021.
+//  Created by Karim Cordilia on 03/02/2021.
 //  Copyright © 2021 Karim Cordilia. All rights reserved.
 //
 
 import UIKit
 import Kingfisher
 
-class MovieTableViewCell: UITableViewCell {
+class MovieCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var movieImage: UIImageView!
-    @IBOutlet weak var movieTitle: UILabel!
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        self.layer.cornerRadius = 10
+    }
     
     func configure(movie: Movie) {
         movieImage.kf.setImage(with: movie.posterURL)
-        movieTitle.text = movie.title
     }
+
 }

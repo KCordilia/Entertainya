@@ -37,5 +37,10 @@ class SharedAssembly: Assembly {
         container.register(Storyboard.self, name: R.storyboard.home.name) { _ in
             return HomeStoryboard(sharedContainer: self.sharedContainer, assembly: HomeAssembly())
         }
+        
+        // Movie
+        container.register(Storyboard.self, name: R.storyboard.movie.name) { _ in
+            return MovieStoryboard(sharedContainer: self.sharedContainer, assembly: MovieAssembly())
+        }
     }
 }

@@ -12,16 +12,20 @@ import SwinjectAutoregistration
 class HomeAssembly: Assembly {
     func assemble(container: Container) {
         
-        // MARK: Home
         container.register(HomeRouterProtocol.self) { resolver in
             return HomeRouter(
-                rootNavigator: resolver ~> (RootNavigatorProtocol.self)
+                rootNavigator: resolver ~> (RootNavigatorProtocol.self),
+                movieStoryboard: resolver ~> (Storyboard.self, name: R.storyboard.movie.name)
             )
         }
         
         container.autoregister(HomeInteractorProtocol.self, initializer: HomeInteractor.init)
         
         container.autoregister(HomePresenterProtocol.self, initializer: HomePresenter.init)
+        
+        container.storyboardInitCompleted(NavigationController.self) { resolver, nc in
+            nc.prepare()
+        }
         
         container.storyboardInitCompleted(HomeViewController.self) { resolver, vc in
             
