@@ -26,11 +26,11 @@ struct Movie: Codable {
     let voteCount: Int
     let runtime: Int?
     var posterURL: URL {
-        return URL(string: "https://image.tmdb.org/t/p/w500\(posterPath)")!
+        return URL(string: "\(BaseURL.imgURL)\(posterPath)")!
     }
     
     var backdropURL: URL {
-        return URL(string: "https://image.tmdb.org/t/p/w500\(backdropPath ?? posterPath)")!
+        return URL(string: "\(BaseURL.imgURL)\(backdropPath ?? posterPath)")!
     }
     
     var genresText: String {

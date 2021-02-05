@@ -19,6 +19,7 @@ protocol HomePresenterProtocol {
     func presentUpcomingMovies(movies: Movies)
     func presentNowPlayingMovies(movies: Movies)
     func presentTopRatedMovies(movies: Movies)
+    func presentMovie(movie: Movie)
 }
 
 class HomePresenter: HomePresenterProtocol {
@@ -46,5 +47,9 @@ class HomePresenter: HomePresenterProtocol {
     
     func presentTopRatedMovies(movies: Movies) {
         viewController?.displayTopRatedMovies(movies: movies)
+    }
+    
+    func presentMovie(movie: Movie) {
+        viewController?.displayMovie(movie: movie)
     }
 }

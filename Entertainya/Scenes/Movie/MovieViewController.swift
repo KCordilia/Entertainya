@@ -17,6 +17,7 @@ import Kingfisher
 protocol MovieViewControllerProtocol: UIViewControllerRouting {
     func set(interactor: MovieInteractorProtocol)
     func set(router: MovieRouterProtocol)
+    func set(movie: Movie)
     
     func displayMovie(movie: Movie)
 }
@@ -44,10 +45,15 @@ class MovieViewController: UIViewController, MovieViewControllerProtocol {
     func set(router: MovieRouterProtocol) {
         self.router = router
     }
+    
+    func set(movie: Movie) {
+        interactor?.set(movie: movie)
+    }
 
     // MARK: Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        interactor?.handleViewDidLoad()
     }
 
     // MARK: Actions
@@ -55,13 +61,12 @@ class MovieViewController: UIViewController, MovieViewControllerProtocol {
     // MARK: Methods
     
     func displayMovie(movie: Movie) {
-        title = movie.title
+        movieTitle.text = movie.title
         movieImage.kf.setImage(with: movie.backdropURL)
         genreLabel.text = movie.genresText
         releaseDateLabel.text = movie.releaseDate
         runtimeLabel.text = "\(movie.runtime ?? 0) Mins"
         movieDescription.text = movie.overview
-        movieDescription.sizeToFit()
     }
 }
 

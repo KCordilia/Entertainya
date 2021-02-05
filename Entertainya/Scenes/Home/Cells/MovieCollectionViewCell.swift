@@ -11,14 +11,19 @@ import Kingfisher
 
 class MovieCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var movieImage: UIImageView!
+    @IBOutlet weak var movieTitle: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
         self.layer.cornerRadius = 10
     }
     
-    func configure(movie: Movie) {
-        movieImage.kf.setImage(with: movie.posterURL)
+    func configure(movie: Movie, isPoster: Bool) {
+        movieImage.kf.setImage(with: isPoster ? movie.posterURL : movie.backdropURL)
+//        movieTitle.isHidden = isPoster
+//        movieTitle.text = movie.title
     }
+
+    
 
 }

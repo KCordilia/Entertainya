@@ -10,4 +10,5 @@ import Foundation
 
 enum BaseURL {
     static var url = URL(string: "https://api.themoviedb.org/3")!
+    static var imgURL = URL(string: "https://image.tmdb.org/t/p/w500")!
 }

@@ -10,10 +10,10 @@ import Foundation
 import Moya
 
 enum MovieService {
-    case getPopularMovies
     case getNowPlayingMovies(region: String)
-    case getTopRatedMovies(region: String)
     case getUpcomingMovies(region: String)
+    case getPopularMovies
+    case getTopRatedMovies(region: String)
     case getSingleMovie(id: Int)
 }
 
@@ -24,14 +24,14 @@ extension MovieService: TargetType {
 
     var path: String {
         switch self{
-        case .getPopularMovies:
-            return "/movie/popular"
         case .getNowPlayingMovies:
             return "/movie/now_playing"
-        case .getTopRatedMovies:
-            return "/movie/top_rated"
         case .getUpcomingMovies:
             return "/movie/upcoming"
+        case .getPopularMovies:
+            return "/movie/popular"
+        case .getTopRatedMovies:
+            return "/movie/top_rated"
         case .getSingleMovie(let id):
             return "movie/\(id)"
         }
@@ -39,10 +39,10 @@ extension MovieService: TargetType {
 
     var method: Moya.Method {
         switch self {
-        case .getPopularMovies,
-             .getNowPlayingMovies,
-             .getTopRatedMovies,
+        case .getNowPlayingMovies,
              .getUpcomingMovies,
+             .getPopularMovies,
+             .getTopRatedMovies,
              .getSingleMovie:
             return .get
         }
@@ -54,13 +54,6 @@ extension MovieService: TargetType {
 
     var task: Task {
         switch self {
-        case .getPopularMovies:
-            return .requestParameters(
-                parameters: [
-                    "api_key": "b5cf63a4366b7eeb96503ea6c78879ab"
-                ],
-                encoding: URLEncoding.default
-            )
         case .getNowPlayingMovies(let region):
             return .requestParameters(
                 parameters: [
@@ -69,7 +62,7 @@ extension MovieService: TargetType {
                 ],
                 encoding: URLEncoding.default
             )
-        case .getTopRatedMovies(let region):
+        case .getUpcomingMovies(let region):
             return .requestParameters(
                 parameters: [
                     "api_key": "b5cf63a4366b7eeb96503ea6c78879ab",
@@ -77,7 +70,14 @@ extension MovieService: TargetType {
                 ],
                 encoding: URLEncoding.default
             )
-        case .getUpcomingMovies(let region):
+        case .getPopularMovies:
+            return .requestParameters(
+                parameters: [
+                    "api_key": "b5cf63a4366b7eeb96503ea6c78879ab"
+                ],
+                encoding: URLEncoding.default
+            )
+        case .getTopRatedMovies(let region):
             return .requestParameters(
                 parameters: [
                     "api_key": "b5cf63a4366b7eeb96503ea6c78879ab",

@@ -42,14 +42,14 @@ class HomeRouter: NSObject, HomeRouterProtocol {
 extension HomeRouter {
 
     enum Scene {
-        case movie(_ movie: Int)
+        case movie(_ movie: Movie)
     }
 
     func route(to scene: HomeRouter.Scene) {
         switch scene {
-        case .movie(let id):
+        case .movie(let movie):
             guard let vc = movieStoryboard.viewController(identifier: MovieStoryboardId.movie) as? MovieViewController else { return }
-            vc.interactor?.getMovie(movieId: id)
+            vc.set(movie: movie)
             viewController?.show(vc, sender: nil)
         }
     }

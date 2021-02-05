@@ -16,7 +16,8 @@ import Moya
 import RxSwift
 
 protocol MovieInteractorProtocol {
-    func getMovie(movieId: Int)
+    func set(movie: Movie)
+    func handleViewDidLoad()
 }
 
 class MovieInteractor: MovieInteractorProtocol {
@@ -25,25 +26,18 @@ class MovieInteractor: MovieInteractorProtocol {
     
     // MARK: DI
     var presenter: MoviePresenterProtocol
-    let provider: MoyaProvider<MovieService>!
-    let disposeBag = DisposeBag()
+    private var movie: Movie?
 
-    init(presenter: MoviePresenterProtocol,
-         provider: MoyaProvider<MovieService>) {
+    init(presenter: MoviePresenterProtocol) {
         self.presenter = presenter
-        self.provider = provider
     }
     
-    func getMovie(movieId: Int) {
-        provider.rx
-            .request(.getSingleMovie(id: movieId))
-            .filterSuccessfulStatusAndRedirectCodes()
-            .map(Movie.self)
-            .subscribe { [weak self] movie in
-                self?.presenter.presentMovie(movie: movie)
-            } onError: { error in
-                print(error)
-            }.disposed(by: disposeBag)
-
+    func set(movie: Movie) {
+        self.movie = movie
+    }
+    
+    func handleViewDidLoad() {
+        guard let movie = self.movie else { return }
+        presenter.presentMovie(movie: movie)
     }
 }

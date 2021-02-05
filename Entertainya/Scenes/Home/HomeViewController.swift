@@ -16,10 +16,11 @@ import UIKit
 protocol HomeViewControllerProtocol: UIViewControllerRouting {
     func set(interactor: HomeInteractorProtocol)
     func set(router: HomeRouterProtocol)
-    func displayPopularMovies(movies: Movies)
-    func displayNowPlayingMovies(movies: Movies)
-    func displayTopRatedMovies(movies: Movies)
     func displayUpcomingMovies(movies: Movies)
+    func displayNowPlayingMovies(movies: Movies)
+    func displayPopularMovies(movies: Movies)
+    func displayTopRatedMovies(movies: Movies)
+    func displayMovie(movie: Movie)
 }
 
 class HomeViewController: UIViewController, HomeViewControllerProtocol {
@@ -52,21 +53,25 @@ class HomeViewController: UIViewController, HomeViewControllerProtocol {
     // MARK: Actions
     
     // MARK: Methods
-    func displayPopularMovies(movies: Movies) {
-        dataSource.set(popularMovies: movies.results)
+    func displayUpcomingMovies(movies: Movies) {
+        dataSource.set(upcomingMovies: movies.results)
         collectionView.reloadData()
     }
     func displayNowPlayingMovies(movies: Movies) {
         dataSource.set(nowPlayingMovies: movies.results)
         collectionView.reloadData()
     }
+    func displayPopularMovies(movies: Movies) {
+        dataSource.set(popularMovies: movies.results)
+        collectionView.reloadData()
+    }
     func displayTopRatedMovies(movies: Movies) {
         dataSource.set(topRatedMovies: movies.results)
         collectionView.reloadData()
     }
-    func displayUpcomingMovies(movies: Movies) {
-        dataSource.set(upcomingMovies: movies.results)
-        collectionView.reloadData()
+    
+    func displayMovie(movie: Movie) {
+        router?.route(to: .movie(movie))
     }
     
     func setupCollectionView() {
@@ -91,39 +96,18 @@ class HomeViewController: UIViewController, HomeViewControllerProtocol {
                 section.boundarySupplementaryItems = [.init(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(60)), elementKind: R.nib.sectionTitleView.identifier, alignment: .topLeading)]
                 section.orthogonalScrollingBehavior = .continuous // horizontal collectionview
                 return section
-            case 1:
-                let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1)))
-                item.contentInsets.trailing = 8
-                item.contentInsets.bottom = 16
-                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(0.45), heightDimension: .fractionalWidth(0.67)), subitems: [item])
-                let section = NSCollectionLayoutSection(group: group)
-                section.contentInsets.leading = 16
-                section.contentInsets.trailing = 16
-                section.boundarySupplementaryItems = [.init(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(60)), elementKind: R.nib.sectionTitleView.identifier, alignment: .topLeading)]
-                section.orthogonalScrollingBehavior = .continuous // horizontal collectionview
-                return section
-            case 2:
-                let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1)))
-                item.contentInsets.trailing = 8
-                item.contentInsets.bottom = 16
-                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(0.45), heightDimension: .fractionalWidth(0.67)), subitems: [item])
-                let section = NSCollectionLayoutSection(group: group)
-                section.contentInsets.leading = 16
-                section.contentInsets.trailing = 16
-                section.boundarySupplementaryItems = [.init(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(60)), elementKind: R.nib.sectionTitleView.identifier, alignment: .topLeading)]
-                section.orthogonalScrollingBehavior = .continuous // horizontal collectionview
-                return section
             default:
                 let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1)))
                 item.contentInsets.trailing = 8
-                item.contentInsets.bottom = 16
-                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(0.45), heightDimension: .fractionalWidth(0.67)), subitems: [item])
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(0.8), heightDimension: .absolute(160)), subitems: [item])
                 let section = NSCollectionLayoutSection(group: group)
                 section.contentInsets.leading = 16
                 section.contentInsets.trailing = 16
                 section.boundarySupplementaryItems = [.init(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(60)), elementKind: R.nib.sectionTitleView.identifier, alignment: .topLeading)]
                 section.orthogonalScrollingBehavior = .continuous // horizontal collectionview
+                section.contentInsets.bottom = 16
                 return section
+      
             }
         }
     }
@@ -133,13 +117,13 @@ extension HomeViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         switch indexPath.section {
         case 0:
-            router?.route(to: .movie(dataSource.popularMovies[indexPath.row].id))
+            interactor?.getMovie(movieID: dataSource.nowPlayingMovies[indexPath.row].id)
         case 1:
-            router?.route(to: .movie(dataSource.nowPlayingMovies[indexPath.row].id))
+            interactor?.getMovie(movieID: dataSource.upcomingMovies[indexPath.row].id)
         case 2:
-            router?.route(to: .movie(dataSource.topRatedMovies[indexPath.row].id))
+            interactor?.getMovie(movieID: dataSource.popularMovies[indexPath.row].id)
         default:
-            router?.route(to: .movie(dataSource.upcomingMovies[indexPath.row].id))
+            interactor?.getMovie(movieID: dataSource.topRatedMovies[indexPath.row].id)
         }
     }
     

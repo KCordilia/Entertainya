@@ -17,6 +17,7 @@ import RxSwift
 
 protocol HomeInteractorProtocol {
     func handleViewDidLoad()
+    func getMovie(movieID: Int)
 }
 
 class HomeInteractor: HomeInteractorProtocol {
@@ -34,24 +35,10 @@ class HomeInteractor: HomeInteractorProtocol {
     }
     
     func handleViewDidLoad() {
-        getPopularMovies()
         getNowPlayingMovies()
-        getTopRatedMovies()
         getUpcomingMovies()
-    }
-    
-    
-    func getPopularMovies() {
-        provider.rx
-            .request(.getPopularMovies)
-            .filterSuccessfulStatusAndRedirectCodes()
-            .map(Movies.self)
-            .subscribe { [weak self] movies in
-                self?.presenter.presentPopularMovies(movies: movies)
-            } onError: { error in
-                print(error)
-            }.disposed(by: disposeBag)
-        
+        getPopularMovies()
+        getTopRatedMovies()
     }
     
     func getNowPlayingMovies() {
@@ -62,19 +49,6 @@ class HomeInteractor: HomeInteractorProtocol {
             .map(Movies.self)
             .subscribe { [weak self] movies in
                 self?.presenter.presentNowPlayingMovies(movies: movies)
-            } onError: { error in
-                print(error)
-            }.disposed(by: disposeBag)
-    }
-    
-    func getTopRatedMovies() {
-        guard let region = locale else { return }
-        provider.rx
-            .request(.getTopRatedMovies(region: region))
-            .filterSuccessfulStatusCodes()
-            .map(Movies.self)
-            .subscribe { [weak self] movies in
-                self?.presenter.presentTopRatedMovies(movies: movies)
             } onError: { error in
                 print(error)
             }.disposed(by: disposeBag)
@@ -91,5 +65,45 @@ class HomeInteractor: HomeInteractorProtocol {
             } onError: { error in
                 print(error)
             }.disposed(by: disposeBag)
+    }
+    
+    func getPopularMovies() {
+        provider.rx
+            .request(.getPopularMovies)
+            .filterSuccessfulStatusAndRedirectCodes()
+            .map(Movies.self)
+            .subscribe { [weak self] movies in
+                self?.presenter.presentPopularMovies(movies: movies)
+            } onError: { error in
+                print(error)
+            }.disposed(by: disposeBag)
+        
+    }
+
+    func getTopRatedMovies() {
+        guard let region = locale else { return }
+        provider.rx
+            .request(.getTopRatedMovies(region: region))
+            .filterSuccessfulStatusCodes()
+            .map(Movies.self)
+            .subscribe { [weak self] movies in
+                self?.presenter.presentTopRatedMovies(movies: movies)
+            } onError: { error in
+                print(error)
+            }.disposed(by: disposeBag)
+    }
+    
+    
+    func getMovie(movieID: Int) {
+        provider.rx
+            .request(.getSingleMovie(id: movieID))
+            .filterSuccessfulStatusAndRedirectCodes()
+            .map(Movie.self)
+            .subscribe { [weak self] movie in
+                self?.presenter.presentMovie(movie: movie)
+            } onError: { error in
+                print(error)
+            }.disposed(by: disposeBag)
+        
     }
 }
